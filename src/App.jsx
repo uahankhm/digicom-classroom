@@ -19,7 +19,7 @@ import { firebaseConfig } from "./firebase-config.js";
 
 const navItems = [
   { label: "소개", href: "#about" },
-  { label: "프로그램", href: "#programs" },
+  { label: "프로그램 개발", href: "#programs" },
   { label: "블로그", href: "#blog" },
   { label: "강의영상", href: "#videos" },
 ];
@@ -32,45 +32,15 @@ const moreMenuItems = [
 
 const lessonSteps = ["사진 정리", "이야기 작성", "나레이션 만들기", "영상 완성"];
 
-const featuredPrograms = [
-  {
-    tag: "대표 프로그램",
-    title: "AI 영상 자서전 만들기",
-    description: "사진과 이야기를 AI로 정리해 가족에게 전할 수 있는 영상으로 완성합니다.",
-    href: "#",
-  },
-  {
-    tag: "초급 추천",
-    title: "스마트폰 기초 교실",
-    description: "문자, 사진, QR, 앱 설치까지 시니어 눈높이에 맞춰 천천히 배웁니다.",
-    href: "#",
-  },
-];
-
 const vibeCodingItems = [
   {
-    title: "시니어 디지털 퀴즈",
-    description: "수업 내용을 복습할 수 있는 간단한 퀴즈형 프로그램입니다.",
+    title: "플립카드섹션",
+    description: "앞면과 뒷면이 회전하며 전환되는 카드형 섹션을 만들고 연습할 수 있는 프로그램입니다.",
     href: "#",
   },
   {
-    title: "사진 이야기 정리 도구",
-    description: "사진을 보며 자서전 문장과 영상 대본을 정리하는 도구입니다.",
-    href: "#",
-  },
-  {
-    title: "스마트폰 수업 체크리스트",
-    description: "수업별 준비물, 실습 단계, 복습 항목을 확인하는 프로그램입니다.",
-    href: "#",
-  },
-  {
-    title: "유튜브 제목 아이디어 생성기",
-    description: "영상 주제에 맞는 제목과 설명 글감을 AI와 함께 정리합니다.",
-    href: "#",
-  },
-  {
-    title: "키오스크 실습 안내판",
-    description: "키오스크 사용 순서를 큰 글씨와 단계별 화면으로 안내합니다.",
+    title: "AI 논문 리스트",
+    description: "AI 관련 논문, 요약, 참고 링크를 목록으로 정리하고 찾아볼 수 있는 프로그램입니다.",
     href: "#",
   },
 ];
@@ -265,7 +235,7 @@ function Header({ authState, firebase, isMenuOpen, setIsMenuOpen }) {
           aria-label="주요 메뉴"
         >
           {navItems.map((item) =>
-            item.label === "프로그램" ? (
+            item.label === "프로그램 개발" ? (
               <div className="relative" key={item.href} data-header-dropdown>
                 <button
                   className="inline-flex items-center gap-1.5 transition hover:text-brand"
@@ -515,7 +485,7 @@ function Hero() {
         <div className="mt-9 flex flex-col gap-3 sm:flex-row">
           <a className="primary-button" href="#programs">
             <LayoutGrid aria-hidden="true" size={22} />
-            프로그램 보기
+            프로그램 개발 보기
           </a>
           <a className="secondary-button" href="#videos">
             <PlayCircle aria-hidden="true" size={22} />
@@ -580,34 +550,18 @@ function AboutSection() {
 function ProgramsSection() {
   return (
     <section id="programs" className="section-shell">
-      <p className="section-label">PROGRAMS</p>
-      <h2 className="section-title">Vibe Coding과 함께 만든 프로그램</h2>
+      <p className="section-label">PROGRAM DEVELOPMENT</p>
+      <h2 className="section-title">프로그램 개발</h2>
       <p className="body-copy mt-5 max-w-3xl">
-        교육 현장에서 바로 써볼 수 있는 프로그램과 AI 실습 도구를 주제별 리스트로 정리합니다.
-        새 프로그램이 생기면 이 목록에 계속 추가할 수 있습니다.
+        Vibe Coding으로 만들고 확장해갈 프로그램을 정리합니다. 우선 플립카드섹션과 AI 논문 리스트부터
+        시작합니다.
       </p>
 
-      <div className="mt-9 grid gap-5 md:grid-cols-2">
-        {featuredPrograms.map((program) => (
-          <article key={program.title} className="soft-card flex min-h-80 flex-col p-7">
-            <span className="w-fit rounded-full bg-brandSoft px-4 py-2 text-sm font-extrabold text-brand">
-              {program.tag}
-            </span>
-            <h3 className="mt-7 text-2xl font-black leading-tight tracking-normal text-ink">{program.title}</h3>
-            <p className="mt-4 text-lg leading-8 text-body">{program.description}</p>
-            <a className="secondary-button mt-auto w-full text-base" href={program.href}>
-              자세히 보기
-              <ArrowRight aria-hidden="true" size={19} />
-            </a>
-          </article>
-        ))}
-      </div>
-
-      <div className="mt-8 rounded-[1.75rem] border border-cardLine bg-white p-5 shadow-soft sm:p-7">
+      <div className="mt-9 rounded-[1.75rem] border border-cardLine bg-white p-5 shadow-soft sm:p-7">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="section-label">VIBE CODING LIST</p>
-            <h3 className="mt-2 text-3xl font-black tracking-normal text-ink">Vibe Coding 내용 리스트</h3>
+            <p className="section-label">PROGRAM LIST</p>
+            <h3 className="mt-2 text-3xl font-black tracking-normal text-ink">개발 프로그램 목록</h3>
           </div>
           <a className="secondary-button min-h-12 px-5 text-base" href="#contact">
             프로그램 제안하기
