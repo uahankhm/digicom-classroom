@@ -463,22 +463,6 @@ function Header({ authState, firebase, isMenuOpen, setIsMenuOpen }) {
                 {item.label}
               </a>
             ))}
-            <div className="mt-2 rounded-2xl bg-brandSoft p-3">
-              <div className="grid gap-2">
-                {blogCategories.map((category) => (
-                  <a
-                    key={category.href}
-                    className="rounded-xl bg-white px-4 py-3 text-base font-black text-body"
-                    href={category.href}
-                    target="_blank"
-                    rel="noreferrer"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {category.label}
-                  </a>
-                ))}
-              </div>
-            </div>
             {isLoggedIn ? (
               <button
                 className="primary-button mt-2 text-base"
