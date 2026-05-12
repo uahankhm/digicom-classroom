@@ -146,6 +146,20 @@ function createContactHref({ email, subject, body }) {
   return `https://mail.google.com/mail/?view=cm&fs=1&${params.toString()}`;
 }
 
+function openContactPopup(contactHref) {
+  const width = 720;
+  const height = 680;
+  const left = window.screenX + Math.max(0, (window.outerWidth - width) / 2);
+  const top = window.screenY + Math.max(0, (window.outerHeight - height) / 2);
+  const popup = window.open(
+    contactHref,
+    "digicom-contact",
+    `popup=yes,width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=yes`,
+  );
+
+  popup?.focus();
+}
+
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [firebase, setFirebase] = useState(null);
@@ -217,6 +231,9 @@ function App() {
 function Header({ authState, firebase, isMenuOpen, setIsMenuOpen }) {
   const isLoggedIn = Boolean(authState.user);
   const displayEmail = authState.user?.email ?? "";
+  const contactEmail = contactConfig.email.trim();
+  const contactHref = createContactHref({ ...contactConfig, email: contactEmail });
+  const canContact = Boolean(contactEmail);
   const [isBlogMenuOpen, setIsBlogMenuOpen] = useState(false);
   const [isProgramMenuOpen, setIsProgramMenuOpen] = useState(false);
 
@@ -235,6 +252,15 @@ function Header({ authState, firebase, isMenuOpen, setIsMenuOpen }) {
     document.addEventListener("pointerdown", closeDropdowns);
     return () => document.removeEventListener("pointerdown", closeDropdowns);
   }, [isBlogMenuOpen, isProgramMenuOpen]);
+
+  function handleMobileContactClick() {
+    if (!canContact) {
+      return;
+    }
+
+    openContactPopup(contactHref);
+    setIsMenuOpen(false);
+  }
 
   return (
     <header className="sticky top-0 z-50 border-b border-[#E5E7EB] bg-white shadow-[0_1px_8px_rgba(15,23,42,0.04)]">
@@ -408,7 +434,7 @@ function Header({ authState, firebase, isMenuOpen, setIsMenuOpen }) {
       {isMenuOpen && (
         <nav className="border-t border-cardLine bg-white px-5 py-4 shadow-soft lg:hidden" aria-label="모바일 메뉴">
           <div className="grid gap-2 text-lg font-black text-body">
-            {[...navItems, ...moreMenuItems].map((item) => (
+            {[...navItems, ...moreMenuItems].filter((item) => item.href !== "#contact").map((item) => (
               <a
                 key={item.href}
                 className="rounded-2xl px-4 py-3 hover:bg-brandSoft hover:text-brand"
@@ -460,6 +486,25 @@ function Header({ authState, firebase, isMenuOpen, setIsMenuOpen }) {
                 ))}
               </div>
             </div>
+            {canContact ? (
+              <button
+                className="primary-button mt-2 text-base"
+                type="button"
+                onClick={handleMobileContactClick}
+              >
+                <Mail aria-hidden="true" size={20} />
+                문의하기
+              </button>
+            ) : (
+              <button
+                className="mt-2 inline-flex min-h-14 cursor-not-allowed items-center justify-center gap-2 rounded-2xl bg-brandSoft px-6 text-base font-extrabold text-brand/60"
+                type="button"
+                disabled
+              >
+                <Mail aria-hidden="true" size={20} />
+                문의 준비 중
+              </button>
+            )}
             {isLoggedIn ? (
               <button
                 className="primary-button mt-2 text-base"
@@ -856,23 +901,11 @@ function Footer() {
       return;
     }
 
-    const width = 720;
-    const height = 680;
-    const left = window.screenX + Math.max(0, (window.outerWidth - width) / 2);
-    const top = window.screenY + Math.max(0, (window.outerHeight - height) / 2);
-    const popup = window.open(
-      contactHref,
-      "digicom-contact",
-      `popup=yes,width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=yes`,
-    );
-
-    if (popup) {
-      popup.focus();
-    }
+    openContactPopup(contactHref);
   }
 
   return (
-    <footer id="contact" className="shrink-0 border-t border-cardLine bg-site px-4 py-2 sm:px-6 lg:px-10">
+    <footer id="contact" className="hidden shrink-0 border-t border-cardLine bg-site px-4 py-2 sm:block sm:px-6 lg:px-10">
       <div className="soft-card mx-auto flex max-w-6xl items-center gap-3 bg-brand px-4 py-3 text-white sm:px-5">
         <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-4 gap-y-1">
           <h2 className="shrink-0 text-xl font-black tracking-normal sm:text-[26px]">디지콤샘 디지털 교실</h2>
