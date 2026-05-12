@@ -17,6 +17,12 @@ import {
 } from "lucide-react";
 import { firebaseConfig } from "./firebase-config.js";
 
+const contactConfig = {
+  email: "digicomssam@gmail.com",
+  subject: "디지콤샘 디지털 교실 문의",
+  body: "안녕하세요. 디지콤샘 디지털 교실 문의드립니다.",
+};
+
 const navItems = [
   { label: "소개", href: "#about" },
   { label: "프로그램 개발", href: "#programs" },
@@ -125,6 +131,20 @@ const memberVideos = [
 
 const isFirebaseConfigured =
   Boolean(firebaseConfig.apiKey) && !firebaseConfig.apiKey.includes("YOUR_");
+
+function createContactHref({ email, subject, body }) {
+  if (!email) {
+    return "";
+  }
+
+  const params = new URLSearchParams({
+    to: email,
+    su: subject,
+    body,
+  });
+
+  return `https://mail.google.com/mail/?view=cm&fs=1&${params.toString()}`;
+}
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -827,17 +847,49 @@ function BlogSection() {
 }
 
 function Footer() {
+  const contactEmail = contactConfig.email.trim();
+  const contactHref = createContactHref({ ...contactConfig, email: contactEmail });
+  const canContact = Boolean(contactEmail);
+
   return (
     <footer id="contact" className="section-shell py-12">
       <div className="soft-card flex flex-col gap-6 bg-brand p-7 text-white sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-2xl font-black tracking-normal">디지콤샘 디지털 교실</h2>
           <p className="mt-2 text-lg font-bold text-white/80">AI · 스마트폰 · 유튜브 · 시니어 디지털 교육</p>
+          {canContact && (
+            <p className="mt-3 text-base font-bold text-white/80">
+              문의 메일: {contactEmail}
+            </p>
+          )}
+          {!canContact && (
+            <p className="mt-3 text-base font-bold text-white/70">
+              문의 이메일 주소가 준비되면 버튼이 활성화됩니다.
+            </p>
+          )}
         </div>
-        <a className="inline-flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-white px-6 text-lg font-extrabold text-brand" href="mailto:">
-          <Mail aria-hidden="true" size={22} />
-          문의하기
-        </a>
+        {canContact ? (
+          <a
+            className="inline-flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-white px-6 text-lg font-extrabold text-brand transition hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-white/30"
+            href={contactHref}
+            target="_blank"
+            rel="noreferrer"
+            aria-label={`${contactEmail}로 문의 메일 보내기`}
+          >
+            <Mail aria-hidden="true" size={22} />
+            문의하기
+          </a>
+        ) : (
+          <button
+            className="inline-flex min-h-14 cursor-not-allowed items-center justify-center gap-2 rounded-2xl bg-white/65 px-6 text-lg font-extrabold text-brand/60"
+            type="button"
+            disabled
+            title="문의 이메일 주소가 아직 설정되지 않았습니다."
+          >
+            <Mail aria-hidden="true" size={22} />
+            문의 준비 중
+          </button>
+        )}
       </div>
       <p className="mt-7 text-base font-bold text-muted">
         GitHub Pages와 Firebase로 운영할 수 있는 정적 교육 플랫폼입니다.
