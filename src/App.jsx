@@ -434,25 +434,49 @@ function Header({ authState, firebase, isMenuOpen, setIsMenuOpen }) {
       {isMenuOpen && (
         <nav className="max-h-[calc(100vh-104px)] overflow-y-auto border-t border-cardLine bg-white px-5 py-4 shadow-soft lg:hidden" aria-label="모바일 메뉴">
           <div className="grid gap-2 text-lg font-black text-body">
-            {canContact ? (
-              <button
-                className="primary-button mb-2 text-base"
-                type="button"
-                onClick={handleMobileContactClick}
-              >
-                <Mail aria-hidden="true" size={20} />
-                문의하기
-              </button>
-            ) : (
-              <button
-                className="mb-2 inline-flex min-h-14 cursor-not-allowed items-center justify-center gap-2 rounded-2xl bg-brandSoft px-6 text-base font-extrabold text-brand/60"
-                type="button"
-                disabled
-              >
-                <Mail aria-hidden="true" size={20} />
-                문의 준비 중
-              </button>
-            )}
+            <div className="mb-2 grid grid-cols-2 gap-2">
+              {isLoggedIn ? (
+                <button
+                  className="inline-flex min-h-14 min-w-0 items-center justify-center gap-2 rounded-2xl bg-brand px-4 text-base font-extrabold text-white shadow-soft"
+                  type="button"
+                  onClick={() => {
+                    firebase?.signOut(firebase.auth);
+                    setIsMenuOpen(false);
+                  }}
+                >
+                  <LogOut aria-hidden="true" className="shrink-0" size={19} />
+                  <span className="truncate">{displayEmail}</span>
+                </button>
+              ) : (
+                <a
+                  className="inline-flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-brand px-4 text-base font-extrabold text-white shadow-soft"
+                  href="#member-videos"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <LockKeyhole aria-hidden="true" size={19} />
+                  로그인
+                </a>
+              )}
+              {canContact ? (
+                <button
+                  className="inline-flex min-h-14 items-center justify-center gap-2 rounded-2xl border border-softLine bg-white px-4 text-base font-extrabold text-brand shadow-sm"
+                  type="button"
+                  onClick={handleMobileContactClick}
+                >
+                  <Mail aria-hidden="true" size={19} />
+                  문의하기
+                </button>
+              ) : (
+                <button
+                  className="inline-flex min-h-14 cursor-not-allowed items-center justify-center gap-2 rounded-2xl bg-brandSoft px-4 text-base font-extrabold text-brand/60"
+                  type="button"
+                  disabled
+                >
+                  <Mail aria-hidden="true" size={19} />
+                  문의 준비 중
+                </button>
+              )}
+            </div>
             {[...navItems, ...moreMenuItems].filter((item) => item.href !== "#contact").map((item) => (
               <a
                 key={item.href}
@@ -463,24 +487,6 @@ function Header({ authState, firebase, isMenuOpen, setIsMenuOpen }) {
                 {item.label}
               </a>
             ))}
-            {isLoggedIn ? (
-              <button
-                className="primary-button mt-2 text-base"
-                type="button"
-                onClick={() => {
-                  firebase?.signOut(firebase.auth);
-                  setIsMenuOpen(false);
-                }}
-              >
-                <LogOut aria-hidden="true" size={20} />
-                {displayEmail} 로그아웃
-              </button>
-            ) : (
-              <a className="primary-button mt-2 text-base" href="#member-videos" onClick={() => setIsMenuOpen(false)}>
-                <LockKeyhole aria-hidden="true" size={20} />
-                로그인
-              </a>
-            )}
           </div>
         </nav>
       )}
