@@ -432,8 +432,27 @@ function Header({ authState, firebase, isMenuOpen, setIsMenuOpen }) {
       </div>
 
       {isMenuOpen && (
-        <nav className="border-t border-cardLine bg-white px-5 py-4 shadow-soft lg:hidden" aria-label="모바일 메뉴">
+        <nav className="max-h-[calc(100vh-104px)] overflow-y-auto border-t border-cardLine bg-white px-5 py-4 shadow-soft lg:hidden" aria-label="모바일 메뉴">
           <div className="grid gap-2 text-lg font-black text-body">
+            {canContact ? (
+              <button
+                className="primary-button mb-2 text-base"
+                type="button"
+                onClick={handleMobileContactClick}
+              >
+                <Mail aria-hidden="true" size={20} />
+                문의하기
+              </button>
+            ) : (
+              <button
+                className="mb-2 inline-flex min-h-14 cursor-not-allowed items-center justify-center gap-2 rounded-2xl bg-brandSoft px-6 text-base font-extrabold text-brand/60"
+                type="button"
+                disabled
+              >
+                <Mail aria-hidden="true" size={20} />
+                문의 준비 중
+              </button>
+            )}
             {[...navItems, ...moreMenuItems].filter((item) => item.href !== "#contact").map((item) => (
               <a
                 key={item.href}
@@ -444,32 +463,6 @@ function Header({ authState, firebase, isMenuOpen, setIsMenuOpen }) {
                 {item.label}
               </a>
             ))}
-            <div className="mt-2 rounded-2xl bg-site p-3">
-              <div className="grid gap-2">
-                {vibeCodingItems.map((program) => (
-                  <a
-                    key={program.title}
-                    className="rounded-xl bg-white px-4 py-3 text-base font-black text-body"
-                    href={program.href}
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {program.title}
-                  </a>
-                ))}
-              </div>
-              <div className="mt-3 border-t border-cardLine pt-3">
-                {programExtraMenuItems.map((program) => (
-                  <a
-                    key={program.title}
-                    className="block rounded-xl px-4 py-3 text-base font-extrabold text-muted"
-                    href={program.href}
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {program.title}
-                  </a>
-                ))}
-              </div>
-            </div>
             <div className="mt-2 rounded-2xl bg-brandSoft p-3">
               <div className="grid gap-2">
                 {blogCategories.map((category) => (
@@ -486,25 +479,6 @@ function Header({ authState, firebase, isMenuOpen, setIsMenuOpen }) {
                 ))}
               </div>
             </div>
-            {canContact ? (
-              <button
-                className="primary-button mt-2 text-base"
-                type="button"
-                onClick={handleMobileContactClick}
-              >
-                <Mail aria-hidden="true" size={20} />
-                문의하기
-              </button>
-            ) : (
-              <button
-                className="mt-2 inline-flex min-h-14 cursor-not-allowed items-center justify-center gap-2 rounded-2xl bg-brandSoft px-6 text-base font-extrabold text-brand/60"
-                type="button"
-                disabled
-              >
-                <Mail aria-hidden="true" size={20} />
-                문의 준비 중
-              </button>
-            )}
             {isLoggedIn ? (
               <button
                 className="primary-button mt-2 text-base"
