@@ -851,6 +851,27 @@ function Footer() {
   const contactHref = createContactHref({ ...contactConfig, email: contactEmail });
   const canContact = Boolean(contactEmail);
 
+  function handleContactClick(event) {
+    if (!canContact) {
+      return;
+    }
+
+    const width = 720;
+    const height = 680;
+    const left = window.screenX + Math.max(0, (window.outerWidth - width) / 2);
+    const top = window.screenY + Math.max(0, (window.outerHeight - height) / 2);
+    const popup = window.open(
+      contactHref,
+      "digicom-contact",
+      `popup=yes,width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=yes`,
+    );
+
+    if (popup) {
+      event.preventDefault();
+      popup.focus();
+    }
+  }
+
   return (
     <footer id="contact" className="section-shell py-12">
       <div className="soft-card flex flex-col gap-6 bg-brand p-7 text-white sm:flex-row sm:items-center sm:justify-between">
@@ -875,6 +896,7 @@ function Footer() {
             target="_blank"
             rel="noreferrer"
             aria-label={`${contactEmail}로 문의 메일 보내기`}
+            onClick={handleContactClick}
           >
             <Mail aria-hidden="true" size={22} />
             문의하기
