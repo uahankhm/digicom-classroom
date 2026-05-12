@@ -194,14 +194,14 @@ function App() {
   }, [firebase]);
 
   return (
-    <div className="min-h-screen bg-site text-ink">
+    <div className="flex h-screen flex-col overflow-hidden bg-site text-ink">
       <Header
         authState={authState}
         firebase={firebase}
         isMenuOpen={isMenuOpen}
         setIsMenuOpen={setIsMenuOpen}
       />
-      <main>
+      <main className="flex-1 overflow-y-auto">
         <Hero />
         <AboutSection />
         <ProgramsSection />
@@ -851,7 +851,7 @@ function Footer() {
   const contactHref = createContactHref({ ...contactConfig, email: contactEmail });
   const canContact = Boolean(contactEmail);
 
-  function handleContactClick(event) {
+  function handleContactClick() {
     if (!canContact) {
       return;
     }
@@ -867,43 +867,40 @@ function Footer() {
     );
 
     if (popup) {
-      event.preventDefault();
       popup.focus();
     }
   }
 
   return (
-    <footer id="contact" className="section-shell py-12">
-      <div className="soft-card flex flex-col gap-6 bg-brand p-7 text-white sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h2 className="text-2xl font-black tracking-normal">디지콤샘 디지털 교실</h2>
-          <p className="mt-2 text-lg font-bold text-white/80">AI · 스마트폰 · 유튜브 · 시니어 디지털 교육</p>
+    <footer id="contact" className="shrink-0 border-t border-cardLine bg-site px-4 py-3 sm:px-6 lg:px-10">
+      <div className="soft-card mx-auto flex max-w-6xl flex-col gap-3 bg-brand p-4 text-white sm:flex-row sm:items-center sm:justify-between sm:px-5">
+        <div className="min-w-0">
+          <h2 className="truncate text-xl font-black tracking-normal sm:text-2xl">디지콤샘 디지털 교실</h2>
+          <p className="mt-1 text-sm font-bold text-white/80 sm:text-base">AI · 스마트폰 · 유튜브 · 시니어 디지털 교육</p>
           {canContact && (
-            <p className="mt-3 text-base font-bold text-white/80">
+            <p className="mt-1 truncate text-sm font-bold text-white/80 sm:text-base">
               문의 메일: {contactEmail}
             </p>
           )}
           {!canContact && (
-            <p className="mt-3 text-base font-bold text-white/70">
+            <p className="mt-1 text-sm font-bold text-white/70 sm:text-base">
               문의 이메일 주소가 준비되면 버튼이 활성화됩니다.
             </p>
           )}
         </div>
         {canContact ? (
-          <a
-            className="inline-flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-white px-6 text-lg font-extrabold text-brand transition hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-white/30"
-            href={contactHref}
-            target="_blank"
-            rel="noreferrer"
+          <button
+            className="inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-2xl bg-white px-5 text-base font-extrabold text-brand transition hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-white/30 sm:text-lg"
+            type="button"
             aria-label={`${contactEmail}로 문의 메일 보내기`}
             onClick={handleContactClick}
           >
             <Mail aria-hidden="true" size={22} />
             문의하기
-          </a>
+          </button>
         ) : (
           <button
-            className="inline-flex min-h-14 cursor-not-allowed items-center justify-center gap-2 rounded-2xl bg-white/65 px-6 text-lg font-extrabold text-brand/60"
+            className="inline-flex min-h-12 shrink-0 cursor-not-allowed items-center justify-center gap-2 rounded-2xl bg-white/65 px-5 text-base font-extrabold text-brand/60 sm:text-lg"
             type="button"
             disabled
             title="문의 이메일 주소가 아직 설정되지 않았습니다."
@@ -913,7 +910,7 @@ function Footer() {
           </button>
         )}
       </div>
-      <p className="mt-7 text-base font-bold text-muted">
+      <p className="sr-only">
         GitHub Pages와 Firebase로 운영할 수 있는 정적 교육 플랫폼입니다.
       </p>
     </footer>
