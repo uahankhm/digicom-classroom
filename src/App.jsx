@@ -146,6 +146,19 @@ function createContactHref({ email, subject, body }) {
   return `https://mail.google.com/mail/?view=cm&fs=1&${params.toString()}`;
 }
 
+function createMailtoHref({ email, subject, body }) {
+  if (!email) {
+    return "";
+  }
+
+  const params = new URLSearchParams({
+    subject,
+    body,
+  });
+
+  return `mailto:${email}?${params.toString()}`;
+}
+
 function openContactPopup(contactHref) {
   const width = 720;
   const height = 680;
@@ -233,6 +246,7 @@ function Header({ authState, firebase, isMenuOpen, setIsMenuOpen }) {
   const displayEmail = authState.user?.email ?? "";
   const contactEmail = contactConfig.email.trim();
   const contactHref = createContactHref({ ...contactConfig, email: contactEmail });
+  const contactMailtoHref = createMailtoHref({ ...contactConfig, email: contactEmail });
   const canContact = Boolean(contactEmail);
   const [isBlogMenuOpen, setIsBlogMenuOpen] = useState(false);
   const [isProgramMenuOpen, setIsProgramMenuOpen] = useState(false);
@@ -258,7 +272,7 @@ function Header({ authState, firebase, isMenuOpen, setIsMenuOpen }) {
       return;
     }
 
-    openContactPopup(contactHref);
+    window.location.href = contactMailtoHref;
     setIsMenuOpen(false);
   }
 
