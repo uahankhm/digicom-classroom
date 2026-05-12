@@ -872,18 +872,18 @@ function Footer() {
   }
 
   return (
-    <footer id="contact" className="shrink-0 border-t border-cardLine bg-site px-4 py-3 sm:px-6 lg:px-10">
-      <div className="soft-card mx-auto flex max-w-6xl flex-col gap-3 bg-brand p-4 text-white sm:flex-row sm:items-center sm:justify-between sm:px-5">
-        <div className="min-w-0">
-          <h2 className="truncate text-xl font-black tracking-normal sm:text-2xl">디지콤샘 디지털 교실</h2>
-          <p className="mt-1 text-sm font-bold text-white/80 sm:text-base">AI · 스마트폰 · 유튜브 · 시니어 디지털 교육</p>
+    <footer id="contact" className="shrink-0 border-t border-cardLine bg-site px-4 py-2 sm:px-6 lg:px-10">
+      <div className="soft-card mx-auto flex max-w-6xl items-center gap-3 bg-brand px-4 py-3 text-white sm:px-5">
+        <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-4 gap-y-1">
+          <h2 className="shrink-0 text-xl font-black tracking-normal sm:text-[26px]">디지콤샘 디지털 교실</h2>
+          <p className="truncate text-sm font-bold text-white/80 sm:text-base">AI · 스마트폰 · 유튜브 · 시니어 디지털 교육</p>
           {canContact && (
-            <p className="mt-1 truncate text-sm font-bold text-white/80 sm:text-base">
+            <p className="truncate text-sm font-bold text-white/75 sm:text-base">
               문의 메일: {contactEmail}
             </p>
           )}
           {!canContact && (
-            <p className="mt-1 text-sm font-bold text-white/70 sm:text-base">
+            <p className="truncate text-sm font-bold text-white/70 sm:text-base">
               문의 이메일 주소가 준비되면 버튼이 활성화됩니다.
             </p>
           )}
