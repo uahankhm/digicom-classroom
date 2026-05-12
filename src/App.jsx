@@ -437,15 +437,19 @@ function Header({ authState, firebase, isMenuOpen, setIsMenuOpen }) {
             <div className="mb-2 grid grid-cols-2 gap-2">
               {isLoggedIn ? (
                 <button
-                  className="inline-flex min-h-14 min-w-0 items-center justify-center gap-2 rounded-2xl bg-brand px-4 text-base font-extrabold text-white shadow-soft"
+                  className="flex min-h-14 min-w-0 items-center justify-center gap-2 rounded-2xl bg-brand px-3 text-white shadow-soft"
                   type="button"
+                  title={`${displayEmail} 로그아웃`}
                   onClick={() => {
                     firebase?.signOut(firebase.auth);
                     setIsMenuOpen(false);
                   }}
                 >
                   <LogOut aria-hidden="true" className="shrink-0" size={19} />
-                  <span className="truncate">{displayEmail}</span>
+                  <span className="min-w-0 text-left">
+                    <span className="block text-base font-extrabold leading-5">내 계정</span>
+                    <span className="block truncate text-xs font-bold leading-4 text-white/75">{displayEmail}</span>
+                  </span>
                 </button>
               ) : (
                 <a
@@ -459,7 +463,7 @@ function Header({ authState, firebase, isMenuOpen, setIsMenuOpen }) {
               )}
               {canContact ? (
                 <button
-                  className="inline-flex min-h-14 items-center justify-center gap-2 rounded-2xl border border-softLine bg-white px-4 text-base font-extrabold text-brand shadow-sm"
+                  className="inline-flex min-h-14 items-center justify-center gap-2 rounded-2xl border border-brand/20 bg-white px-4 text-base font-extrabold text-brand shadow-sm"
                   type="button"
                   onClick={handleMobileContactClick}
                 >
