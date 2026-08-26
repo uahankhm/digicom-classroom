@@ -3,6 +3,8 @@ import {
   ArrowRight,
   BookOpen,
   ChevronDown,
+  ExternalLink,
+  FileText,
   Film,
   LayoutGrid,
   LockKeyhole,
@@ -10,6 +12,7 @@ import {
   Mail,
   Menu,
   PlayCircle,
+  Search,
   Smartphone,
   Sparkles,
   UserPlus,
@@ -46,8 +49,8 @@ const vibeCodingItems = [
   },
   {
     title: "AI 논문 리스트",
-    description: "AI 관련 논문, 요약, 참고 링크를 목록으로 정리하고 찾아볼 수 있는 프로그램입니다.",
-    href: "#",
+    description: "등록된 AI 논문 블로그를 제목으로 검색하고, 선택한 글을 홈페이지 안에서 조회합니다.",
+    href: "#paper-blogs",
   },
 ];
 
@@ -126,6 +129,16 @@ const memberVideos = [
     title: "스마트폰 기초 실습",
     description: "문자, 사진, QR 사용법을 천천히 복습하는 영상입니다.",
     embedUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+  },
+];
+
+const samplePaperBlogs = [
+  {
+    id: "sample-paper-blog",
+    title: "샘플: AI 논문 블로그 조회 화면",
+    createdAt: "2026-07-13",
+    contentUrl: "",
+    visible: true,
   },
 ];
 
@@ -232,6 +245,7 @@ function App() {
         <Hero />
         <AboutSection />
         <ProgramsSection />
+        <PaperBlogsSection firebase={firebase} />
         <LearningSection />
         <VideosSection firebase={firebase} authState={authState} />
         <BlogSection />
@@ -641,6 +655,171 @@ function ProgramsSection() {
   );
 }
 
+function PaperBlogsSection({ firebase }) {
+  const [paperBlogs, setPaperBlogs] = useState(samplePaperBlogs);
+  const [selectedId, setSelectedId] = useState(samplePaperBlogs[0]?.id ?? "");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [status, setStatus] = useState(
+    isFirebaseConfigured
+      ? "등록된 논문 블로그를 불러오는 중입니다."
+      : "Firebase 설정 전이라 샘플 화면을 보여줍니다.",
+  );
+
+  useEffect(() => {
+    if (!firebase) {
+      return undefined;
+    }
+
+    let ignore = false;
+
+    async function loadPaperBlogs() {
+      try {
+        const snapshot = await firebase.getDocs(
+          firebase.query(firebase.collection(firebase.db, "paperBlogs"), firebase.orderBy("createdAt", "desc")),
+        );
+        const blogs = snapshot.docs
+          .map((docSnapshot) => normalizePaperBlog(docSnapshot.id, docSnapshot.data()))
+          .filter((blog) => blog.visible !== false);
+
+        if (ignore) {
+          return;
+        }
+
+        setPaperBlogs(blogs);
+        setSelectedId(blogs[0]?.id ?? "");
+        setStatus(
+          blogs.length > 0
+            ? "왼쪽 목록에서 논문 블로그를 선택해 조회할 수 있습니다."
+            : "아직 등록된 논문 블로그가 없습니다.",
+        );
+      } catch (error) {
+        if (!ignore) {
+          setStatus(`논문 블로그를 불러오지 못했습니다: ${error.message}`);
+        }
+      }
+    }
+
+    loadPaperBlogs();
+
+    return () => {
+      ignore = true;
+    };
+  }, [firebase]);
+
+  const filteredBlogs = paperBlogs.filter((blog) =>
+    blog.title.toLocaleLowerCase("ko-KR").includes(searchTerm.trim().toLocaleLowerCase("ko-KR")),
+  );
+  const selectedBlog =
+    filteredBlogs.find((blog) => blog.id === selectedId) ?? filteredBlogs[0] ?? paperBlogs[0] ?? null;
+
+  return (
+    <section id="paper-blogs" className="border-y border-cardLine bg-white">
+      <div className="section-shell">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <p className="section-label">AI PAPER BLOGS</p>
+            <h2 className="section-title">AI 논문 블로그 조회</h2>
+            <p className="body-copy mt-5 max-w-3xl">
+              논문 블로그 생성 프로그램이 등록한 글을 제목으로 찾고, 선택한 글을 홈페이지 안에서 읽는
+              화면입니다.
+            </p>
+          </div>
+          <p className="rounded-2xl bg-brandSoft px-5 py-3 text-base font-extrabold text-brand">{status}</p>
+        </div>
+
+        <div className="mt-9 grid min-h-[640px] gap-5 lg:grid-cols-[minmax(280px,0.36fr)_minmax(0,0.64fr)]">
+          <aside className="flex min-h-0 flex-col rounded-[1.25rem] border border-cardLine bg-site p-4">
+            <label className="flex min-h-12 items-center gap-3 rounded-2xl border border-cardLine bg-white px-4">
+              <Search aria-hidden="true" size={20} className="text-muted" />
+              <input
+                className="min-w-0 flex-1 bg-transparent text-base font-bold text-ink outline-none placeholder:text-muted"
+                type="search"
+                value={searchTerm}
+                onChange={(event) => setSearchTerm(event.target.value)}
+                placeholder="블로그 제목 검색"
+              />
+            </label>
+
+            <div className="mt-4 flex-1 overflow-y-auto pr-1">
+              {filteredBlogs.length > 0 ? (
+                <div className="grid gap-2">
+                  {filteredBlogs.map((blog) => {
+                    const isSelected = selectedBlog?.id === blog.id;
+                    return (
+                      <button
+                        key={blog.id}
+                        className={`rounded-2xl border p-4 text-left transition ${
+                          isSelected
+                            ? "border-brand bg-white shadow-soft"
+                            : "border-transparent bg-white/70 hover:border-brand/30 hover:bg-white"
+                        }`}
+                        type="button"
+                        onClick={() => setSelectedId(blog.id)}
+                      >
+                        <span className="block text-lg font-black leading-7 text-ink">{blog.title}</span>
+                        <span className="mt-2 block text-sm font-extrabold text-muted">
+                          {formatPaperBlogDate(blog.createdAt)}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="rounded-2xl bg-white p-5 text-base font-bold leading-7 text-muted">
+                  검색 결과가 없습니다.
+                </div>
+              )}
+            </div>
+          </aside>
+
+          <article className="flex min-h-0 flex-col overflow-hidden rounded-[1.25rem] border border-cardLine bg-white shadow-soft">
+            <div className="flex flex-col gap-3 border-b border-cardLine p-5 sm:flex-row sm:items-center sm:justify-between">
+              <div className="min-w-0">
+                <p className="section-label">READ ONLY</p>
+                <h3 className="mt-2 truncate text-2xl font-black tracking-normal text-ink">
+                  {selectedBlog?.title ?? "논문 블로그를 선택하세요"}
+                </h3>
+              </div>
+              {selectedBlog?.contentUrl ? (
+                <a
+                  className="secondary-button min-h-12 px-5 text-base"
+                  href={selectedBlog.contentUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <ExternalLink aria-hidden="true" size={19} />
+                  새 창
+                </a>
+              ) : null}
+            </div>
+
+            {selectedBlog?.contentUrl ? (
+              <iframe
+                className="h-[620px] w-full flex-1 bg-white"
+                title={selectedBlog.title}
+                src={selectedBlog.contentUrl}
+              />
+            ) : (
+              <div className="grid min-h-[520px] place-items-center bg-site p-8 text-center">
+                <div className="max-w-xl">
+                  <span className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-brand text-white">
+                    <FileText aria-hidden="true" size={30} />
+                  </span>
+                  <h4 className="mt-6 text-3xl font-black tracking-normal text-ink">조회용 글을 기다리는 중입니다</h4>
+                  <p className="mt-4 text-lg font-bold leading-8 text-body">
+                    논문 블로그 생성 프로그램이 Firebase Storage에 HTML을 올리고 Firestore에 등록하면,
+                    이 영역에 해당 글이 표시됩니다.
+                  </p>
+                </div>
+              </div>
+            )}
+          </article>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function LearningSection() {
   return (
     <section id="learning" className="bg-brandSoft">
@@ -943,6 +1122,47 @@ function getFriendlyError(error) {
   return messages[error.code] ?? `오류가 발생했습니다: ${error.message}`;
 }
 
+function normalizePaperBlog(id, data) {
+  const title = getPaperBlogField(data, ["title"]);
+  const createdAt = getPaperBlogField(data, ["createdAt", "createAt"]);
+  const contentUrl = getPaperBlogField(data, ["contentUrl", "contenturl", "contentURL"]);
+  const visible = getPaperBlogField(data, ["visible"]);
+
+  return {
+    id,
+    title: title ?? "제목 없는 논문 블로그",
+    createdAt: createdAt?.toDate ? createdAt.toDate().toISOString() : createdAt,
+    contentUrl: contentUrl ?? "",
+    visible,
+  };
+}
+
+function getPaperBlogField(data, names) {
+  const entries = Object.entries(data);
+  const normalizedNames = names.map((name) => name.toLocaleLowerCase("en-US"));
+  const matchedEntry = entries.find(([key]) => normalizedNames.includes(key.trim().toLocaleLowerCase("en-US")));
+
+  return matchedEntry?.[1];
+}
+
+function formatPaperBlogDate(value) {
+  if (!value) {
+    return "등록일 없음";
+  }
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return new Intl.DateTimeFormat("ko-KR", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  }).format(date);
+}
+
 async function loadFirebase(config) {
   const [{ getApp, getApps, initializeApp }, authModule, firestoreModule] = await Promise.all([
     import("firebase/app"),
@@ -954,11 +1174,15 @@ async function loadFirebase(config) {
 
   return {
     auth: authModule.getAuth(app),
+    collection: firestoreModule.collection,
     db: firestoreModule.getFirestore(app),
     createUserWithEmailAndPassword: authModule.createUserWithEmailAndPassword,
     doc: firestoreModule.doc,
     getDoc: firestoreModule.getDoc,
+    getDocs: firestoreModule.getDocs,
     onAuthStateChanged: authModule.onAuthStateChanged,
+    orderBy: firestoreModule.orderBy,
+    query: firestoreModule.query,
     serverTimestamp: firestoreModule.serverTimestamp,
     setDoc: firestoreModule.setDoc,
     signInWithEmailAndPassword: authModule.signInWithEmailAndPassword,
