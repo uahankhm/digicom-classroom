@@ -752,33 +752,33 @@ function PaperBlogsSection({ firebase }) {
     filteredBlogs.find((blog) => blog.id === selectedId) ?? filteredBlogs[0] ?? paperBlogs[0] ?? null;
 
   return (
-    <section id="paper-blogs" className="min-h-[calc(100vh-104px)] bg-[#17242B] text-white">
+    <section id="paper-blogs" className="min-h-[calc(100vh-104px)] bg-[#EEF4EF] text-ink">
       <div className="mx-auto flex min-h-[calc(100vh-104px)] w-full max-w-[1500px] flex-col px-4 py-5 sm:px-6 lg:px-8">
-        <div className="flex flex-col gap-4 border-b border-white/10 pb-5 lg:flex-row lg:items-end lg:justify-between">
+        <div className="flex flex-col gap-4 border-b border-[#C7DAD5] pb-5 lg:flex-row lg:items-end lg:justify-between">
           <div className="min-w-0 max-w-full">
             <a
-              className="mb-5 inline-flex min-h-11 items-center gap-2 rounded-full border border-white/15 bg-white/8 px-4 text-sm font-extrabold text-white/80 transition hover:bg-white/14 hover:text-white"
+              className="mb-5 inline-flex min-h-11 items-center gap-2 rounded-full border border-[#BFD6D0] bg-white px-4 text-sm font-extrabold text-brand shadow-sm transition hover:border-brand/40 hover:bg-brandSoft"
               href="#top"
             >
               <ArrowLeft aria-hidden="true" size={17} />
               홈페이지로 돌아가기
             </a>
-            <p className="text-sm font-extrabold uppercase tracking-normal text-[#8FE4D4]">AI PAPER BLOGS</p>
-            <h2 className="mt-3 max-w-[340px] text-3xl font-black leading-tight tracking-normal text-white sm:max-w-none sm:text-5xl">
+            <p className="text-sm font-extrabold uppercase tracking-normal text-brand">AI PAPER BLOGS</p>
+            <h2 className="mt-3 max-w-[340px] text-3xl font-black leading-tight tracking-normal text-[#17242B] sm:max-w-none sm:text-5xl">
               AI 논문 블로그 조회
             </h2>
-            <p className="mt-4 max-w-[340px] text-lg font-bold leading-8 text-white/68 sm:max-w-3xl">
+            <p className="mt-4 max-w-[340px] text-lg font-bold leading-8 text-body sm:max-w-3xl">
               제목으로 논문 블로그를 찾고, 선택한 글을 오른쪽 읽기 화면에서 바로 확인합니다.
             </p>
           </div>
-          <p className="rounded-2xl border border-[#8FE4D4]/20 bg-[#8FE4D4]/10 px-5 py-3 text-base font-extrabold text-[#BDF8EE]">
+          <p className="rounded-2xl border border-[#9FCAC3] bg-white px-5 py-3 text-base font-extrabold text-brand shadow-sm">
             {status}
           </p>
         </div>
 
         <div className="grid flex-1 gap-5 pt-5 lg:grid-cols-[minmax(300px,0.34fr)_minmax(0,0.66fr)]">
-          <aside className="flex min-h-[520px] flex-col rounded-[1.25rem] border border-white/10 bg-[#23343D] p-4 shadow-[0_24px_70px_rgba(0,0,0,0.18)] lg:min-h-0">
-            <label className="flex min-h-12 items-center gap-3 rounded-2xl border border-white/10 bg-white px-4">
+          <aside className="flex min-h-[520px] flex-col rounded-[1.25rem] border border-[#BFD6D0] bg-[#D8EAE5] p-4 shadow-[0_24px_70px_rgba(31,122,131,0.13)] lg:min-h-0">
+            <label className="flex min-h-12 items-center gap-3 rounded-2xl border border-[#BFD6D0] bg-white px-4">
               <Search aria-hidden="true" size={20} className="text-[#66757B]" />
               <input
                 className="min-w-0 flex-1 bg-transparent text-base font-bold text-ink outline-none placeholder:text-muted"
@@ -799,16 +799,16 @@ function PaperBlogsSection({ firebase }) {
                         key={blog.id}
                         className={`group rounded-2xl border p-4 text-left transition ${
                           isSelected
-                            ? "border-[#F2B84B] bg-white text-ink shadow-[0_18px_45px_rgba(0,0,0,0.18)]"
-                            : "border-white/8 bg-white/7 text-white hover:border-[#8FE4D4]/40 hover:bg-white/12"
+                            ? "border-[#F2B84B] bg-white text-ink shadow-[0_18px_45px_rgba(31,122,131,0.16)]"
+                            : "border-[#BFD6D0] bg-[#F8FBF8] text-ink hover:border-brand/40 hover:bg-white"
                         }`}
                         type="button"
                         onClick={() => setSelectedId(blog.id)}
                       >
-                        <span className={`block text-lg font-black leading-7 ${isSelected ? "text-ink" : "text-white"}`}>
+                        <span className="block text-lg font-black leading-7 text-ink">
                           {blog.title}
                         </span>
-                        <span className={`mt-2 block text-sm font-extrabold ${isSelected ? "text-muted" : "text-white/52"}`}>
+                        <span className={`mt-2 block text-sm font-extrabold ${isSelected ? "text-muted" : "text-[#6D7A7A]"}`}>
                           {formatPaperBlogDate(blog.createdAt)}
                         </span>
                       </button>
@@ -816,15 +816,15 @@ function PaperBlogsSection({ firebase }) {
                   })}
                 </div>
               ) : (
-                <div className="rounded-2xl bg-white/8 p-5 text-base font-bold leading-7 text-white/60">
+                <div className="rounded-2xl bg-white p-5 text-base font-bold leading-7 text-muted">
                   검색 결과가 없습니다.
                 </div>
               )}
             </div>
           </aside>
 
-          <article className="flex min-h-[620px] flex-col overflow-hidden rounded-[1.25rem] border border-white/10 bg-white shadow-[0_24px_80px_rgba(0,0,0,0.22)] lg:min-h-0">
-            <div className="flex flex-col gap-3 border-b border-[#DCE6E8] bg-[#F7F5EF] p-5 sm:flex-row sm:items-center sm:justify-between">
+          <article className="flex min-h-[620px] flex-col overflow-hidden rounded-[1.25rem] border border-[#C7DAD5] bg-white shadow-[0_24px_80px_rgba(31,122,131,0.15)] lg:min-h-0">
+            <div className="flex flex-col gap-3 border-b border-[#DCE6E8] bg-[#FBF8EF] p-5 sm:flex-row sm:items-center sm:justify-between">
               <div className="min-w-0">
                 <p className="text-sm font-extrabold uppercase tracking-normal text-[#2F6F78]">READ ONLY</p>
                 <h3 className="mt-2 truncate text-2xl font-black tracking-normal text-[#17242B]">
@@ -851,7 +851,7 @@ function PaperBlogsSection({ firebase }) {
                 src={selectedBlog.contentUrl}
               />
             ) : (
-              <div className="grid min-h-[520px] place-items-center bg-[#F7F5EF] p-8 text-center">
+              <div className="grid min-h-[520px] place-items-center bg-[#FBF8EF] p-8 text-center">
                 <div className="max-w-xl">
                   <span className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-brand text-white">
                     <FileText aria-hidden="true" size={30} />
