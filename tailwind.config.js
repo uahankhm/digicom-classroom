@@ -4,18 +4,18 @@ export default {
   theme: {
     extend: {
       colors: {
-        site: "#F8FAF9",
-        brand: "#2F9E8F",
-        brandSoft: "#EAF7F4",
-        cardLine: "#D9EBE7",
-        softLine: "#CFE7E2",
-        ink: "#20302D",
-        body: "#526763",
-        muted: "#6A7B78",
-        orangePoint: "#FFE8D1",
+        site: "#F4F1EA",
+        brand: "#1F7A83",
+        brandSoft: "#DDF1EC",
+        cardLine: "#D6DED9",
+        softLine: "#BFD6D0",
+        ink: "#17242B",
+        body: "#475A5C",
+        muted: "#6D7A7A",
+        orangePoint: "#F2B84B",
       },
       boxShadow: {
-        soft: "0 20px 60px rgba(32, 48, 45, 0.08)",
+        soft: "0 22px 70px rgba(23, 36, 43, 0.12)",
       },
       fontFamily: {
         sans: [

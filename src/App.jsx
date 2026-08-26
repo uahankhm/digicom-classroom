@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import {
+  ArrowLeft,
   ArrowRight,
   BookOpen,
   ChevronDown,
@@ -11,6 +12,7 @@ import {
   LogOut,
   Mail,
   Menu,
+  Newspaper,
   PlayCircle,
   Search,
   Smartphone,
@@ -188,6 +190,7 @@ function openContactPopup(contactHref) {
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isPaperReader, setIsPaperReader] = useState(() => window.location.hash === "#paper-blogs");
   const [firebase, setFirebase] = useState(null);
   const [authState, setAuthState] = useState({
     user: null,
@@ -211,6 +214,17 @@ function App() {
     return () => {
       ignore = true;
     };
+  }, []);
+
+  useEffect(() => {
+    function handleHashChange() {
+      setIsPaperReader(window.location.hash === "#paper-blogs");
+      setIsMenuOpen(false);
+    }
+
+    handleHashChange();
+    window.addEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("hashchange", handleHashChange);
   }, []);
 
   useEffect(() => {
@@ -242,15 +256,20 @@ function App() {
         setIsMenuOpen={setIsMenuOpen}
       />
       <main className="flex-1 overflow-y-auto">
-        <Hero />
-        <AboutSection />
-        <ProgramsSection />
-        <PaperBlogsSection firebase={firebase} />
-        <LearningSection />
-        <VideosSection firebase={firebase} authState={authState} />
-        <BlogSection />
+        {isPaperReader ? (
+          <PaperBlogsSection firebase={firebase} />
+        ) : (
+          <>
+            <Hero />
+            <AboutSection />
+            <ProgramsSection />
+            <LearningSection />
+            <VideosSection firebase={firebase} authState={authState} />
+            <BlogSection />
+          </>
+        )}
       </main>
-      <Footer />
+      {!isPaperReader && <Footer />}
     </div>
   );
 }
@@ -298,7 +317,7 @@ function Header({ authState, firebase, isMenuOpen, setIsMenuOpen }) {
             <Sparkles aria-hidden="true" size={28} />
           </span>
           <span className="min-w-0">
-            <span className="block truncate text-[25px] font-black leading-none tracking-normal text-[#111827]">
+            <span className="block truncate text-[22px] font-black leading-none tracking-normal text-[#111827] sm:text-[25px]">
               디지콤샘 디지털 교실
             </span>
           </span>
@@ -529,26 +548,26 @@ function Header({ authState, firebase, isMenuOpen, setIsMenuOpen }) {
 function Hero() {
   return (
     <section id="top" className="section-shell grid min-h-[calc(100vh-104px)] items-center gap-10 lg:grid-cols-[1.08fr_0.92fr]">
-      <div>
+      <div className="min-w-0 max-w-full">
         <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-softLine bg-white px-5 py-3 text-base font-extrabold text-brand shadow-sm">
           <Smartphone aria-hidden="true" size={21} />
           시니어도 쉽게 배우는 디지털 수업
         </div>
-        <h1 className="max-w-3xl text-5xl font-black leading-[1.08] tracking-normal text-ink sm:text-6xl lg:text-7xl">
+        <h1 className="max-w-[340px] text-4xl font-black leading-[1.08] tracking-normal text-ink sm:max-w-3xl sm:text-6xl lg:text-7xl">
           AI와 스마트폰을
           <span className="block">쉽고 따뜻하게</span>
           <span className="block text-brand">배우는 공간</span>
         </h1>
-        <p className="body-copy mt-7 max-w-2xl">
+        <p className="body-copy mt-7 max-w-[340px] sm:max-w-2xl">
           디지콤샘의 수업 자료, 실습 영상, 블로그 글, 그리고 AI와 함께 만든 프로그램을 한곳에서
           만나는 교육 플랫폼입니다.
         </p>
-        <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-          <a className="primary-button" href="#programs">
+        <div className="mt-9 flex max-w-[340px] flex-col gap-3 sm:max-w-none sm:flex-row">
+          <a className="primary-button w-full sm:w-auto" href="#programs">
             <LayoutGrid aria-hidden="true" size={22} />
             프로그램 개발 보기
           </a>
-          <a className="secondary-button" href="#videos">
+          <a className="secondary-button w-full sm:w-auto" href="#videos">
             <PlayCircle aria-hidden="true" size={22} />
             강의영상 보기
           </a>
@@ -651,6 +670,26 @@ function ProgramsSection() {
           ))}
         </div>
       </div>
+
+      <a
+        className="mt-7 grid gap-5 overflow-hidden rounded-[1.75rem] border border-[#263B45]/10 bg-[#1F3038] p-6 text-white shadow-[0_24px_80px_rgba(20,35,43,0.18)] transition hover:-translate-y-0.5 hover:shadow-[0_28px_90px_rgba(20,35,43,0.24)] sm:grid-cols-[1fr_auto] sm:items-center sm:p-7"
+        href="#paper-blogs"
+      >
+        <span>
+          <span className="inline-flex items-center gap-2 text-sm font-extrabold uppercase text-[#8FE4D4]">
+            <Newspaper aria-hidden="true" size={18} />
+            AI Paper Reader
+          </span>
+          <span className="mt-3 block text-3xl font-black tracking-normal">AI 논문 블로그 전용 조회 화면</span>
+          <span className="mt-3 block max-w-3xl text-lg font-bold leading-8 text-white/75">
+            홈페이지를 복잡하게 펼치지 않고, 논문 목록과 본문 읽기를 별도 화면에서 또렷하게 확인합니다.
+          </span>
+        </span>
+        <span className="primary-button bg-[#F2B84B] text-[#1F3038] hover:bg-[#FFD47A]">
+          조회 화면 열기
+          <ArrowRight aria-hidden="true" size={20} />
+        </span>
+      </a>
     </section>
   );
 }
@@ -713,24 +752,34 @@ function PaperBlogsSection({ firebase }) {
     filteredBlogs.find((blog) => blog.id === selectedId) ?? filteredBlogs[0] ?? paperBlogs[0] ?? null;
 
   return (
-    <section id="paper-blogs" className="border-y border-cardLine bg-white">
-      <div className="section-shell">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <p className="section-label">AI PAPER BLOGS</p>
-            <h2 className="section-title">AI 논문 블로그 조회</h2>
-            <p className="body-copy mt-5 max-w-3xl">
-              논문 블로그 생성 프로그램이 등록한 글을 제목으로 찾고, 선택한 글을 홈페이지 안에서 읽는
-              화면입니다.
+    <section id="paper-blogs" className="min-h-[calc(100vh-104px)] bg-[#17242B] text-white">
+      <div className="mx-auto flex min-h-[calc(100vh-104px)] w-full max-w-[1500px] flex-col px-4 py-5 sm:px-6 lg:px-8">
+        <div className="flex flex-col gap-4 border-b border-white/10 pb-5 lg:flex-row lg:items-end lg:justify-between">
+          <div className="min-w-0 max-w-full">
+            <a
+              className="mb-5 inline-flex min-h-11 items-center gap-2 rounded-full border border-white/15 bg-white/8 px-4 text-sm font-extrabold text-white/80 transition hover:bg-white/14 hover:text-white"
+              href="#top"
+            >
+              <ArrowLeft aria-hidden="true" size={17} />
+              홈페이지로 돌아가기
+            </a>
+            <p className="text-sm font-extrabold uppercase tracking-normal text-[#8FE4D4]">AI PAPER BLOGS</p>
+            <h2 className="mt-3 max-w-[340px] text-3xl font-black leading-tight tracking-normal text-white sm:max-w-none sm:text-5xl">
+              AI 논문 블로그 조회
+            </h2>
+            <p className="mt-4 max-w-[340px] text-lg font-bold leading-8 text-white/68 sm:max-w-3xl">
+              제목으로 논문 블로그를 찾고, 선택한 글을 오른쪽 읽기 화면에서 바로 확인합니다.
             </p>
           </div>
-          <p className="rounded-2xl bg-brandSoft px-5 py-3 text-base font-extrabold text-brand">{status}</p>
+          <p className="rounded-2xl border border-[#8FE4D4]/20 bg-[#8FE4D4]/10 px-5 py-3 text-base font-extrabold text-[#BDF8EE]">
+            {status}
+          </p>
         </div>
 
-        <div className="mt-9 grid min-h-[640px] gap-5 lg:grid-cols-[minmax(280px,0.36fr)_minmax(0,0.64fr)]">
-          <aside className="flex min-h-0 flex-col rounded-[1.25rem] border border-cardLine bg-site p-4">
-            <label className="flex min-h-12 items-center gap-3 rounded-2xl border border-cardLine bg-white px-4">
-              <Search aria-hidden="true" size={20} className="text-muted" />
+        <div className="grid flex-1 gap-5 pt-5 lg:grid-cols-[minmax(300px,0.34fr)_minmax(0,0.66fr)]">
+          <aside className="flex min-h-[520px] flex-col rounded-[1.25rem] border border-white/10 bg-[#23343D] p-4 shadow-[0_24px_70px_rgba(0,0,0,0.18)] lg:min-h-0">
+            <label className="flex min-h-12 items-center gap-3 rounded-2xl border border-white/10 bg-white px-4">
+              <Search aria-hidden="true" size={20} className="text-[#66757B]" />
               <input
                 className="min-w-0 flex-1 bg-transparent text-base font-bold text-ink outline-none placeholder:text-muted"
                 type="search"
@@ -748,16 +797,18 @@ function PaperBlogsSection({ firebase }) {
                     return (
                       <button
                         key={blog.id}
-                        className={`rounded-2xl border p-4 text-left transition ${
+                        className={`group rounded-2xl border p-4 text-left transition ${
                           isSelected
-                            ? "border-brand bg-white shadow-soft"
-                            : "border-transparent bg-white/70 hover:border-brand/30 hover:bg-white"
+                            ? "border-[#F2B84B] bg-white text-ink shadow-[0_18px_45px_rgba(0,0,0,0.18)]"
+                            : "border-white/8 bg-white/7 text-white hover:border-[#8FE4D4]/40 hover:bg-white/12"
                         }`}
                         type="button"
                         onClick={() => setSelectedId(blog.id)}
                       >
-                        <span className="block text-lg font-black leading-7 text-ink">{blog.title}</span>
-                        <span className="mt-2 block text-sm font-extrabold text-muted">
+                        <span className={`block text-lg font-black leading-7 ${isSelected ? "text-ink" : "text-white"}`}>
+                          {blog.title}
+                        </span>
+                        <span className={`mt-2 block text-sm font-extrabold ${isSelected ? "text-muted" : "text-white/52"}`}>
                           {formatPaperBlogDate(blog.createdAt)}
                         </span>
                       </button>
@@ -765,18 +816,18 @@ function PaperBlogsSection({ firebase }) {
                   })}
                 </div>
               ) : (
-                <div className="rounded-2xl bg-white p-5 text-base font-bold leading-7 text-muted">
+                <div className="rounded-2xl bg-white/8 p-5 text-base font-bold leading-7 text-white/60">
                   검색 결과가 없습니다.
                 </div>
               )}
             </div>
           </aside>
 
-          <article className="flex min-h-0 flex-col overflow-hidden rounded-[1.25rem] border border-cardLine bg-white shadow-soft">
-            <div className="flex flex-col gap-3 border-b border-cardLine p-5 sm:flex-row sm:items-center sm:justify-between">
+          <article className="flex min-h-[620px] flex-col overflow-hidden rounded-[1.25rem] border border-white/10 bg-white shadow-[0_24px_80px_rgba(0,0,0,0.22)] lg:min-h-0">
+            <div className="flex flex-col gap-3 border-b border-[#DCE6E8] bg-[#F7F5EF] p-5 sm:flex-row sm:items-center sm:justify-between">
               <div className="min-w-0">
-                <p className="section-label">READ ONLY</p>
-                <h3 className="mt-2 truncate text-2xl font-black tracking-normal text-ink">
+                <p className="text-sm font-extrabold uppercase tracking-normal text-[#2F6F78]">READ ONLY</p>
+                <h3 className="mt-2 truncate text-2xl font-black tracking-normal text-[#17242B]">
                   {selectedBlog?.title ?? "논문 블로그를 선택하세요"}
                 </h3>
               </div>
@@ -795,12 +846,12 @@ function PaperBlogsSection({ firebase }) {
 
             {selectedBlog?.contentUrl ? (
               <iframe
-                className="h-[620px] w-full flex-1 bg-white"
+                className="h-[calc(100vh-260px)] min-h-[620px] w-full flex-1 bg-white"
                 title={selectedBlog.title}
                 src={selectedBlog.contentUrl}
               />
             ) : (
-              <div className="grid min-h-[520px] place-items-center bg-site p-8 text-center">
+              <div className="grid min-h-[520px] place-items-center bg-[#F7F5EF] p-8 text-center">
                 <div className="max-w-xl">
                   <span className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-brand text-white">
                     <FileText aria-hidden="true" size={30} />
