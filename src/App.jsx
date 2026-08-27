@@ -772,9 +772,9 @@ function PaperBlogsSection({ firebase }) {
     filteredBlogs.find((blog) => blog.id === selectedId) ?? filteredBlogs[0] ?? paperBlogs[0] ?? null;
 
   return (
-    <section id="paper-blogs" className="h-[calc(100vh-104px)] overflow-hidden bg-[#EEF4EF] text-ink">
-      <div className="mx-auto flex h-full w-full max-w-[1500px] flex-col overflow-hidden px-4 py-4 sm:px-6 lg:px-8">
-        <div className="shrink-0 border-b border-[#C7DAD5] pb-4">
+    <section id="paper-blogs" className="min-h-[calc(100vh-104px)] bg-[#EEF4EF] text-ink">
+      <div className="mx-auto flex min-h-[calc(100vh-104px)] w-full max-w-[1500px] flex-col px-4 py-4 sm:px-6 lg:px-8">
+        <div className="border-b border-[#C7DAD5] pb-4">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div className="min-w-0 max-w-full">
             <a
@@ -798,7 +798,7 @@ function PaperBlogsSection({ firebase }) {
           </div>
         </div>
 
-        <div className="grid min-h-0 flex-1 gap-4 overflow-hidden pt-4 lg:grid-cols-[minmax(300px,0.34fr)_minmax(0,0.66fr)]">
+        <div className="grid h-[calc(100vh-128px)] min-h-[680px] gap-4 overflow-hidden pt-4 lg:grid-cols-[minmax(300px,0.34fr)_minmax(0,0.66fr)]">
           <aside className="flex min-h-0 min-w-0 flex-col overflow-hidden rounded-[1.25rem] border border-[#BFD6D0] bg-[#D8EAE5] p-4 shadow-[0_24px_70px_rgba(31,122,131,0.13)]">
             <label className="flex min-h-12 items-center gap-3 rounded-2xl border border-[#BFD6D0] bg-white px-4">
               <Search aria-hidden="true" size={20} className="text-[#66757B]" />
