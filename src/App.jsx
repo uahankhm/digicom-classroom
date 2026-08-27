@@ -12,7 +12,6 @@ import {
   LogOut,
   Mail,
   Menu,
-  Newspaper,
   PlayCircle,
   Search,
   Smartphone,
@@ -46,13 +45,15 @@ const lessonSteps = ["사진 정리", "이야기 작성", "나레이션 만들�
 const vibeCodingItems = [
   {
     title: "플립카드섹션",
-    description: "앞면과 뒷면이 회전하며 전환되는 카드형 섹션을 만들고 연습할 수 있는 프로그램입니다.",
+    description: "앞면과 뒷면이 회전하며 전환되는 카드형 섹션을 만들고 연습할 수 있는 프로그램입니다. 현재 준비 중입니다.",
     href: "#",
+    disabled: true,
   },
   {
     title: "AI 논문 리스트",
     description: "등록된 AI 논문 블로그를 제목으로 검색하고, 선택한 글을 홈페이지 안에서 조회합니다.",
     href: "#paper-blogs",
+    disabled: false,
   },
 ];
 
@@ -350,16 +351,25 @@ function Header({ authState, firebase, isMenuOpen, setIsMenuOpen }) {
                 {isProgramMenuOpen && (
                   <div className="absolute left-0 top-full z-20 mt-5 w-[390px] rounded-[1.5rem] border border-cardLine bg-white p-4 shadow-soft">
                     <div className="absolute -top-6 left-0 h-6 w-full" />
-                    {vibeCodingItems.map((program) => (
-                      <a
-                        key={program.title}
-                        className="mb-2 block rounded-2xl px-4 py-4 text-lg font-black text-body hover:bg-brandSoft hover:text-brand"
-                        href={program.href}
-                        onClick={() => setIsProgramMenuOpen(false)}
-                      >
-                        {program.title}
-                      </a>
-                    ))}
+                    {vibeCodingItems.map((program) =>
+                      program.disabled ? (
+                        <span
+                          key={program.title}
+                          className="mb-2 block cursor-not-allowed rounded-2xl px-4 py-4 text-lg font-black text-muted opacity-70"
+                        >
+                          {program.title} · 준비 중
+                        </span>
+                      ) : (
+                        <a
+                          key={program.title}
+                          className="mb-2 block rounded-2xl px-4 py-4 text-lg font-black text-body hover:bg-brandSoft hover:text-brand"
+                          href={program.href}
+                          onClick={() => setIsProgramMenuOpen(false)}
+                        >
+                          {program.title}
+                        </a>
+                      ),
+                    )}
                     <div className="mt-3 border-t border-cardLine pt-3">
                       {programExtraMenuItems.map((program) => (
                         <a
@@ -649,47 +659,57 @@ function ProgramsSection() {
         </div>
 
         <div className="mt-6 grid gap-3">
-          {vibeCodingItems.map((item, index) => (
-            <a
-              key={item.title}
-              className="group grid gap-4 rounded-2xl border border-cardLine bg-site p-5 transition hover:-translate-y-0.5 hover:border-brand/40 hover:bg-brandSoft sm:grid-cols-[56px_1fr_auto] sm:items-center"
-              href={item.href}
-            >
-              <span className="flex size-14 items-center justify-center rounded-2xl bg-brand text-xl font-black text-white">
-                {index + 1}
-              </span>
-              <span>
-                <span className="block text-xl font-black tracking-normal text-ink">{item.title}</span>
-                <span className="mt-1 block text-base leading-7 text-body">{item.description}</span>
-              </span>
-              <span className="inline-flex items-center gap-2 text-base font-black text-brand">
-                보기
-                <ArrowRight className="transition group-hover:translate-x-1" aria-hidden="true" size={18} />
-              </span>
-            </a>
-          ))}
+          {vibeCodingItems.map((item, index) => {
+            const content = (
+              <>
+                <span
+                  className={`flex size-14 items-center justify-center rounded-2xl text-xl font-black ${
+                    item.disabled ? "bg-[#D7DED9] text-muted" : "bg-brand text-white"
+                  }`}
+                >
+                  {index + 1}
+                </span>
+                <span>
+                  <span className={`block text-xl font-black tracking-normal ${item.disabled ? "text-muted" : "text-ink"}`}>
+                    {item.title}
+                  </span>
+                  <span className={`mt-1 block text-base leading-7 ${item.disabled ? "text-muted" : "text-body"}`}>
+                    {item.description}
+                  </span>
+                </span>
+                <span
+                  className={`inline-flex items-center gap-2 text-base font-black ${
+                    item.disabled ? "text-muted" : "text-brand"
+                  }`}
+                >
+                  {item.disabled ? "준비 중" : "보기"}
+                  {!item.disabled && (
+                    <ArrowRight className="transition group-hover:translate-x-1" aria-hidden="true" size={18} />
+                  )}
+                </span>
+              </>
+            );
+
+            return item.disabled ? (
+              <div
+                key={item.title}
+                className="grid cursor-not-allowed gap-4 rounded-2xl border border-cardLine bg-[#ECEFEA] p-5 opacity-75 sm:grid-cols-[56px_1fr_auto] sm:items-center"
+                aria-disabled="true"
+              >
+                {content}
+              </div>
+            ) : (
+              <a
+                key={item.title}
+                className="group grid gap-4 rounded-2xl border border-cardLine bg-site p-5 transition hover:-translate-y-0.5 hover:border-brand/40 hover:bg-brandSoft sm:grid-cols-[56px_1fr_auto] sm:items-center"
+                href={item.href}
+              >
+                {content}
+              </a>
+            );
+          })}
         </div>
       </div>
-
-      <a
-        className="mt-7 grid gap-5 overflow-hidden rounded-[1.75rem] border border-[#263B45]/10 bg-[#1F3038] p-6 text-white shadow-[0_24px_80px_rgba(20,35,43,0.18)] transition hover:-translate-y-0.5 hover:shadow-[0_28px_90px_rgba(20,35,43,0.24)] sm:grid-cols-[1fr_auto] sm:items-center sm:p-7"
-        href="#paper-blogs"
-      >
-        <span>
-          <span className="inline-flex items-center gap-2 text-sm font-extrabold uppercase text-[#8FE4D4]">
-            <Newspaper aria-hidden="true" size={18} />
-            AI Paper Reader
-          </span>
-          <span className="mt-3 block text-3xl font-black tracking-normal">AI 논문 블로그 전용 조회 화면</span>
-          <span className="mt-3 block max-w-3xl text-lg font-bold leading-8 text-white/75">
-            홈페이지를 복잡하게 펼치지 않고, 논문 목록과 본문 읽기를 별도 화면에서 또렷하게 확인합니다.
-          </span>
-        </span>
-        <span className="primary-button bg-[#F2B84B] text-[#1F3038] hover:bg-[#FFD47A]">
-          조회 화면 열기
-          <ArrowRight aria-hidden="true" size={20} />
-        </span>
-      </a>
     </section>
   );
 }
