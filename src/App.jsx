@@ -44,6 +44,13 @@ const lessonSteps = ["사진 정리", "이야기 작성", "나레이션 만들�
 
 const vibeCodingItems = [
   {
+    title: "이미지 프롬프트 만들기",
+    description: "사진 변환, 새 장면, 동화책, 정보 그림에 필요한 이미지 생성 요청문을 단계별로 완성합니다.",
+    href: "./image-prompt-studio.html",
+    disabled: false,
+    newTab: true,
+  },
+  {
     title: "플립카드섹션",
     description: "앞면과 뒷면이 회전하며 전환되는 카드형 섹션을 만들고 연습할 수 있는 프로그램입니다. 현재 준비 중입니다.",
     href: "#",
@@ -364,6 +371,8 @@ function Header({ authState, firebase, isMenuOpen, setIsMenuOpen }) {
                           key={program.title}
                           className="mb-2 block rounded-2xl px-4 py-4 text-lg font-black text-body hover:bg-brandSoft hover:text-brand"
                           href={program.href}
+                          target={program.newTab ? "_blank" : undefined}
+                          rel={program.newTab ? "noreferrer" : undefined}
                           onClick={() => setIsProgramMenuOpen(false)}
                         >
                           {program.title}
@@ -643,8 +652,8 @@ function ProgramsSection() {
       <p className="section-label">PROGRAM DEVELOPMENT</p>
       <h2 className="section-title">프로그램 개발</h2>
       <p className="body-copy mt-5 max-w-3xl">
-        Vibe Coding으로 만들고 확장해갈 프로그램을 정리합니다. 우선 플립카드섹션과 AI 논문 리스트부터
-        시작합니다.
+        Vibe Coding으로 만든 실용 프로그램을 한곳에 모았습니다. 필요한 도구를 눌러 바로 사용할 수
+        있습니다.
       </p>
 
       <div className="mt-9 rounded-[1.75rem] border border-cardLine bg-white p-5 shadow-soft sm:p-7">
@@ -703,6 +712,8 @@ function ProgramsSection() {
                 key={item.title}
                 className="group grid gap-4 rounded-2xl border border-cardLine bg-site p-5 transition hover:-translate-y-0.5 hover:border-brand/40 hover:bg-brandSoft sm:grid-cols-[56px_1fr_auto] sm:items-center"
                 href={item.href}
+                target={item.newTab ? "_blank" : undefined}
+                rel={item.newTab ? "noreferrer" : undefined}
               >
                 {content}
               </a>
